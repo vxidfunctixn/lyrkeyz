@@ -1,0 +1,325 @@
+@use 'sass:math';
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('./fonts/Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-stretch: 75% 100%;
+  font-display: swap;
+}
+
+$backgrund-color: hsl(340, 80%, 6%);
+$accent-color: hsl(340, 90%, 37%);
+$highlight-color: hsl(340, 86%, 3%);
+$font-color: white;
+$border-color: rgba(white, 0.15);
+$line-height: 36px;
+
+@keyframes scaleY {
+   0% {
+      transform: scaleY(1);
+   }
+   25% {
+      transform: scaleY(1);
+   }
+   75% {
+      transform: scaleY(0);
+   }
+   100% {
+      transform: scaleY(0);
+   }
+}
+
+@mixin removeLigatures() {
+   font-variant-ligatures: none;
+   font-feature-settings: "liga" 0, "clig" 0, "kern" 0, "calt" 0, "dlig" 0;
+}
+
+*, *:before, *:after {
+   box-sizing: border-box;
+}
+
+body {
+   background-color: $backgrund-color;
+   color: $font-color;
+   font-family: 'Roboto', serif;
+   font-size: 24px;
+   line-height: 32px;
+   margin: 0;
+   height: 100vh;
+   padding: 1px;
+
+   @include removeLigatures();
+}
+
+::selection {
+   background-color: $accent-color;
+   color: $font-color;
+}
+
+.wrapper {
+   height: 100%;
+   width: 1000px;
+   max-height: calc(100dvh - 64px);
+   max-width: calc(100% - 64px);
+   margin: 32px auto;
+   position: relative;
+   box-shadow: 0 15px 45px -5px rgba(black, .5);
+   border: 1px solid $accent-color;
+   border-radius: 8px;
+   overflow: hidden;
+}
+
+@mixin scrollbar {
+   &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+      background-color: $backgrund-color;
+
+   }
+
+   &::-webkit-scrollbar-thumb {
+      border-radius: 8px;
+      background-color: $accent-color;
+      border: 2px solid $highlight-color;
+   }
+
+   &::-webkit-scrollbar-corner {
+      background-color: $backgrund-color;
+   }
+}
+
+#text-input {
+   position: absolute;
+   width: calc(100% - 88px);
+   left: 88px;
+   padding-left: 8px;
+   height: 100%;
+   background-color: transparent;
+   color: $font-color;
+   font-family: 'Roboto', serif;
+   border: none;
+   font-size: 24px;
+   line-height: $line-height;
+   outline: none;
+   white-space: nowrap;
+   resize: none;
+   font-display: block;
+   display: block;
+   color: transparent;
+   z-index: 2;
+   padding-bottom: 8px;
+   padding-top: 8px;
+
+   @include scrollbar();
+   overflow-y: scroll;
+}
+
+#line-overlay {
+   background-color: transparent;
+   color: $font-color;
+   overflow: hidden;
+   pointer-events: none;
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   padding-top: 8px;
+   padding-bottom: 16px;
+
+   .line {
+      height: $line-height;
+      display: flex;
+      align-items: center;
+      position: relative;
+
+      .column-data {
+         --gradient-color: #{$backgrund-color};
+         width: 95px;
+         height: $line-height - 4px;
+         display: flex;
+         align-items: center;
+         padding-left: 16px;
+         padding-right: 16px;
+         justify-content: space-between;
+         position: relative;
+         background-color: transparent;
+         flex-shrink: 0;
+         background-image: linear-gradient(to right,
+            transparent 0%,
+            transparent 10px,
+            var(--gradient-color) 11px,
+            var(--gradient-color) calc(100% - 10px),
+            transparent 100%);
+
+         .verseNumber {
+            height: 28px;
+            font-size: 18px;
+            opacity: 0.6;
+            line-height: 28px;
+            text-align: right;
+            max-width: 24px;
+         }
+
+         .syllable {
+            text-align: center;
+            font-size: 21px;
+            height: 28px;
+            line-height: 28px;
+            background-color: rgba(white, .15);
+            border: 1px solid rgba(white, .15);
+            padding: 0 4px;
+            border-radius: 6px;
+         }
+
+         .separator {
+            display: block;
+            height: 8px;
+            border-radius: 4px;
+            width: 100%;
+            background-color: rgba(white, 0.15);
+            margin-left: auto;
+         }
+
+         .header {
+            display: block;
+            height: 8px;
+            border-radius: 4px;
+            width: 100%;
+            background-color: $accent-color;
+            margin-left: auto;
+         }
+
+         .buckle {
+            --borderColor: #{$border-color};
+            --borderWidth: 2px;
+            display: block;
+            height: $line-height;
+            position: absolute;
+            right: 7px;
+            top: -2px;
+            width: 8px;
+            border-right: var(--borderWidth) solid var(--borderColor);
+
+            &.first {
+               height: $line-height / 2;
+               top: ($line-height / 2) - 2px;
+               border-top-right-radius: 6px;
+               border-top: var(--borderWidth) solid var(--borderColor);
+            }
+
+            &.last {
+               height: ($line-height / 2) + 2px;
+               border-bottom-right-radius: 6px;
+               border-bottom: var(--borderWidth) solid var(--borderColor);
+            }
+
+            &.first.last {
+               top: math.floor($line-height / 4) - 3px;
+            }
+         }
+      }
+
+      &.highlight {
+         &::before {
+            content: "";
+            display: block;
+            background-color: $highlight-color;
+            box-shadow: 0 0 0 2px rgba($accent-color, 0.2);
+            height: 100%;
+            width: calc(100% - 20px);
+            border-radius: 4px;
+            position: absolute;
+            left: 10px;
+            top: 0;
+            z-index: -2;
+         }
+
+         .column-data {
+            --gradient-color: #{$highlight-color};
+         }
+      }
+   }
+}
+
+#text-overlay {
+   background-color: transparent;
+   color: $font-color;
+   overflow: hidden;
+   pointer-events: none;
+   position: absolute;
+   width: calc(100% - 88px);
+   left: 88px;
+   padding-left: 8px;
+   height: 100%;
+   padding-top: 8px;
+   padding-bottom: 16px;
+
+   .line {
+      height: $line-height;
+      line-height: $line-height;
+      white-space: pre;
+      position: relative;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+
+      .column-data {
+         height: $line-height;
+         display: block;
+         padding-right: 16px;
+
+         span.header {
+            $_strokeWidth: 0.2px;
+            $_borderColor: lighten($accent-color, 10%);
+            color: $accent-color;
+            text-shadow:
+               ($_strokeWidth * 2) 0 $_strokeWidth $_borderColor, ($_strokeWidth * -2) 0 $_strokeWidth $_borderColor,
+               0 ($_strokeWidth * 2) $_strokeWidth $_borderColor, 0 ($_strokeWidth * -2) $_strokeWidth $_borderColor;
+         }
+
+         span.comment {
+            color: $border-color;
+         }
+
+         .cursor-carret {
+            display: inline-block;
+            width: 2px;
+            margin: 0 -1px;
+            left: 1px;
+            position: relative;
+            z-index: 3;
+            height: 1em;
+
+            &::before {
+               content: "";
+               display: block;
+               position: absolute;
+               width: 2px;
+               height: 32px;
+               top: 0px;
+               left: -1px;
+               background-color: yellow;
+               animation: scaleY .4s infinite alternate cubic-bezier(0.4, 0, 0.6, 1);
+            }
+         }
+
+         span.slash {
+            display: inline-block;
+         }
+      }
+   }
+}
+
+.copyrights {
+   position: fixed;
+   font-size: 12px;
+   bottom: 0px;
+   right: 0px;
+   z-index: 999;
+   color: $accent-color;
+   opacity: 0.5;
+   pointer-events: none;
+   line-height: 12px;
+   width: 100%;
+   padding: 4px 8px;
+}

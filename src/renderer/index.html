@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>LyrkeyZ</title>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    />
+
+    <link href="./assets/main.scss" type="text/css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <textarea id="text-input" spellcheck="false" autocomplete="off"></textarea>
+      <div id="text-overlay"></div>
+      <div id="line-overlay"></div>
+    </div>
+
+    <div class="copyrights">
+      <span class="app-version"></span> |
+      <span class="electron-version"></span> |
+      <span class="chrome-version"></span> |
+      <span class="node-version"></span>
+    </div>
+
+    <script type="module" src="./src/renderer.js"></script>
+  </body>
+</html>
