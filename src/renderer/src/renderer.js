@@ -10,7 +10,7 @@ function init() {
 function doAThing() {
   const versions = window.electron.process.versions
   const appVersion = window.electron.process.env.npm_package_version
-  const appName = window.electron.process.env.npm_package_name
+  const appName = 'LyrkeyZ'
 
   replaceText('.app-version', `${appName} v${appVersion}`)
   replaceText('.electron-version', `Electron v${versions.electron}`)

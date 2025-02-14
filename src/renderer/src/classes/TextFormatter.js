@@ -3,89 +3,67 @@ export default class TextFormater {
     this.textInput = document.getElementById('text-input')
     this.textOverlay = document.getElementById('text-overlay')
     this.lineOverlay = document.getElementById('line-overlay')
-    this.activeLine = 0
-    this.activeColumn = 0
 
-    let savedText = this.getSavedText()
-    if (savedText) {
-      this.textInput.value = savedText
-    }
     this.textChange()
 
     this.textInput.addEventListener('input', () => this.textChange())
     document.addEventListener('selectionchange', () => this.textChange())
-    this.textInput.addEventListener('scroll', () => this.textScroll())
+    this.textInput.addEventListener('scroll', () => this.handleTextScroll())
 
     this.textInput.focus()
   }
 
-  updateCursorPosition() {
-    const cursorPosition = this.textInput.selectionStart
-    const textBeforeCursor = this.textInput.value.substring(0, cursorPosition)
-    const lines = textBeforeCursor.split('\n')
-
-    this.activeLine = lines.length - 1
-    this.activeColumn = lines[lines.length - 1].length
-  }
-
-  getSavedText() {
-    let savedText = this.getCookie('lyrics_text')
-
-    savedText = decodeURIComponent(savedText)
-    return savedText !== 'undefined' && savedText.length ? savedText : false
-  }
-
-  getCookie(name) {
-    var value = '; ' + document.cookie
-    var parts = value.split('; ' + name + '=')
-    if (parts.length == 2) return parts.pop().split(';').shift()
+  loadText(value) {
+    this.textInput.value = value
+    this.textChange()
   }
 
   textChange() {
-    document.cookie = 'lyrics_text=' + encodeURIComponent(this.textInput.value)
-    let lineOverlayHTML = ''
-    let textOverlayHTML = ''
-    let tmpLines = this.textInput.value.split('\n')
-    let verseCount = 1
-    let versesCount = new Array()
-    let lines = new Array()
-    versesCount.push({
-      syllable: new Array(),
-      avarangeSyllable: 0
-    })
+    const linesData = this.prepareLinesData()
+    this.renderLines(linesData)
+  }
 
-    tmpLines.forEach((line, index) => {
-      let syllable = this.countLineSyllabes(line)
-      if (syllable !== 0) {
-        versesCount[versesCount.length - 1].syllable.push(syllable)
+  prepareLinesData() {
+    const lines = []
+    const splittedLines = this.textInput.value.split('\n')
+    const verses = [{ syllables: [] }]
+    let verseNumber = 1
+
+    splittedLines.map((line, index) => {
+      const syllables = this.countLineSyllabes(line)
+      if (syllables !== 0) {
+        verses[verses.length - 1].syllables.push(syllables)
       }
 
       const isHeader = line.trim().startsWith('[') && line.trim().endsWith(']')
 
       lines.push({
-        syllable: syllable,
+        syllables,
         text: line,
-        verseCount: verseCount,
+        verseCount: verseNumber,
         isHeader
       })
 
-      if (syllable === 0 || index === tmpLines.length - 1 || isHeader) {
-        verseCount = 1
-        versesCount[versesCount.length - 1].avarangeSyllable = this.getAvarangeSyllable(
-          versesCount[versesCount.length - 1].syllable
-        )
-        versesCount.push({
-          syllable: new Array(),
-          avarangeSyllable: 0
+      if (syllables === 0 || index === splittedLines.length - 1 || isHeader) {
+        verseNumber = 1
+        verses.push({
+          syllables: []
         })
       } else {
-        verseCount++
+        verseNumber++
       }
     })
+    return lines
+  }
 
-    this.updateCursorPosition()
-    lines.forEach((line, index) => {
-      const isActiveLine = index === this.activeLine
+  renderLines(linesData) {
+    let lineOverlayHTML = ''
+    let textOverlayHTML = ''
+
+    const cursorPosition = this.getCursorPosition()
+
+    linesData.map((line, index) => {
+      const isActiveLine = index === cursorPosition.currentLine
       const highlightClass = isActiveLine ? ' highlight' : ''
       const cursorCarret = '<span class="cursor-carret"></span>'
 
@@ -94,9 +72,9 @@ export default class TextFormater {
 
       if (isActiveLine) {
         textHighLight =
-          textHighLight.slice(0, this.activeColumn) +
+          textHighLight.slice(0, cursorPosition.currentColumn) +
           cursorCarret +
-          textHighLight.slice(this.activeColumn)
+          textHighLight.slice(cursorPosition.currentColumn)
       }
 
       const textHighLightCommentArr = textHighLight.split('//')
@@ -112,18 +90,18 @@ export default class TextFormater {
       if (line.isHeader) {
         columnData = `<span class="header"></span>`
         textHighLight = `<span class="header">${textHighLight}</span>`
-      } else if (line.syllable > 0) {
+      } else if (line.syllables > 0) {
         const firstClass = line.verseCount === 1 ? ' first' : ''
-        const nextElement = lines?.[index + 1]
+        const nextElement = linesData?.[index + 1]
         const lastClass =
-          nextElement === undefined || nextElement?.syllable === 0 || nextElement?.isHeader
+          nextElement === undefined || nextElement?.syllables === 0 || nextElement?.isHeader
             ? ' last'
             : ''
         columnData = `
-              <span class="verseNumber">${line.verseCount}.</span>
-              <span class="syllable">${line.syllable}</span>
-              <span class="buckle${firstClass}${lastClass}">
-           `
+          <span class="verseNumber">${line.verseCount}.</span>
+          <span class="syllable">${line.syllables}</span>
+          <span class="buckle${firstClass}${lastClass}">
+          `
       }
 
       lineOverlayHTML += `
@@ -137,17 +115,9 @@ export default class TextFormater {
         </div>
         `
     })
+
     this.lineOverlay.innerHTML = lineOverlayHTML
     this.textOverlay.innerHTML = textOverlayHTML
-  }
-
-  getAvarangeSyllable(syllable) {
-    if (syllable.length) {
-      let sum = syllable.reduce((previous, current) => (current += previous))
-      return Math.round(sum / syllable.length)
-    } else {
-      return 0
-    }
   }
 
   countLineSyllabes(lineOfText) {
@@ -181,7 +151,18 @@ export default class TextFormater {
     return temp
   }
 
-  textScroll() {
+  getCursorPosition() {
+    const cursorPosition = this.textInput.selectionStart
+    const textBeforeCursor = this.textInput.value.substring(0, cursorPosition)
+    const lines = textBeforeCursor.split('\n')
+
+    return {
+      currentLine: lines.length - 1,
+      currentColumn: lines[lines.length - 1].length
+    }
+  }
+
+  handleTextScroll() {
     this.lineOverlay.scroll({
       left: 0,
       top: this.textInput.scrollTop

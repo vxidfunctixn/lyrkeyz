@@ -7,5 +7,13 @@ export default defineConfig({
   preload: {
     plugins: [externalizeDepsPlugin()]
   },
-  renderer: {}
+  renderer: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'modern-compiler'
+        }
+      }
+    }
+  }
 })

@@ -1,4 +1,5 @@
 @use 'sass:math';
+@use "sass:color";
 
 @font-face {
   font-family: 'Roboto';
@@ -30,11 +31,6 @@ $line-height: 36px;
    }
 }
 
-@mixin removeLigatures() {
-   font-variant-ligatures: none;
-   font-feature-settings: "liga" 0, "clig" 0, "kern" 0, "calt" 0, "dlig" 0;
-}
-
 *, *:before, *:after {
    box-sizing: border-box;
 }
@@ -48,8 +44,8 @@ body {
    margin: 0;
    height: 100vh;
    padding: 1px;
-
-   @include removeLigatures();
+   font-variant-ligatures: none;
+   font-feature-settings: "liga" 0, "clig" 0, "kern" 0, "calt" 0, "dlig" 0;
 }
 
 ::selection {
@@ -201,20 +197,20 @@ body {
             border-right: var(--borderWidth) solid var(--borderColor);
 
             &.first {
-               height: $line-height / 2;
-               top: ($line-height / 2) - 2px;
+               height: math.div($line-height, 2);
+               top: math.div($line-height, 2) - 2px;
                border-top-right-radius: 6px;
                border-top: var(--borderWidth) solid var(--borderColor);
             }
 
             &.last {
-               height: ($line-height / 2) + 2px;
+               height: math.div($line-height, 2) + 2px;
                border-bottom-right-radius: 6px;
                border-bottom: var(--borderWidth) solid var(--borderColor);
             }
 
             &.first.last {
-               top: math.floor($line-height / 4) - 3px;
+               top: math.floor(math.div($line-height, 4)) - 3px;
             }
          }
       }
@@ -270,7 +266,7 @@ body {
 
          span.header {
             $_strokeWidth: 0.2px;
-            $_borderColor: lighten($accent-color, 10%);
+            $_borderColor: color.adjust($accent-color, $lightness: 10%, $space: hsl);
             color: $accent-color;
             text-shadow:
                ($_strokeWidth * 2) 0 $_strokeWidth $_borderColor, ($_strokeWidth * -2) 0 $_strokeWidth $_borderColor,
