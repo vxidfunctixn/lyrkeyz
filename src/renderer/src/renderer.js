@@ -1,13 +1,15 @@
 import TextFormater from './classes/TextFormatter'
+import Store from './classes/Store'
 
 function init() {
   window.addEventListener('DOMContentLoaded', () => {
-    doAThing()
+    setVersion()
+    window.store = new Store()
     window.textformatter = new TextFormater()
   })
 }
 
-function doAThing() {
+function setVersion() {
   const versions = window.electron.process.versions
   const appVersion = window.electron.process.env.npm_package_version
   const appName = 'LyrkeyZ'
@@ -16,18 +18,11 @@ function doAThing() {
   replaceText('.electron-version', `Electron v${versions.electron}`)
   replaceText('.chrome-version', `Chromium v${versions.chrome}`)
   replaceText('.node-version', `Node v${versions.node}`)
-
-  const ipcHandlerBtn = document.getElementById('ipcHandler')
-  ipcHandlerBtn?.addEventListener('click', () => {
-    window.electron.ipcRenderer.send('ping')
-  })
 }
 
 function replaceText(selector, text) {
   const element = document.querySelector(selector)
-  if (element) {
-    element.innerText = text
-  }
+  if (element) element.innerText = text
 }
 
 init()

@@ -2,6 +2,9 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import fs from 'fs'
+
+const dataPath = join(app.getPath('userData'), 'lyrkeyz-data.json')
 
 function createWindow() {
   // Create the browser window.
@@ -74,3 +77,20 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+function loadDataStore() {
+  try {
+    const data = fs.readFileSync(dataPath, 'utf-8')
+    return JSON.parse(data)
+  } catch (error) {
+    return null
+  }
+}
+
+function saveDataStore(storeData) {
+  const data = JSON.stringify(storeData, null, 2)
+  fs.writeFileSync(dataPath, data)
+}
+
+ipcMain.handle('load-data-store', () => loadDataStore())
+ipcMain.handle('save-data-store', (e, storeData) => saveDataStore(storeData))
