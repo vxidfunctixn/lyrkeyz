@@ -9,6 +9,10 @@ export default class TextFormater {
     this.textInput.addEventListener('input', () => this.textChange())
     document.addEventListener('selectionchange', () => this.textChange())
     this.textInput.addEventListener('scroll', () => this.handleTextScroll())
+    document.addEventListener('dataStoreLoaded', () => {
+      const text = window.store.getText(1)?.text
+      this.loadText(text)
+    })
 
     this.textInput.focus()
   }
@@ -21,6 +25,9 @@ export default class TextFormater {
   textChange() {
     const linesData = this.prepareLinesData()
     this.renderLines(linesData)
+    window.store.setText(1, {
+      text: this.textInput.value
+    })
   }
 
   prepareLinesData() {

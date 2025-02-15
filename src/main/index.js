@@ -5,10 +5,11 @@ import icon from '../../resources/icon.png?asset'
 import fs from 'fs'
 
 const dataPath = join(app.getPath('userData'), 'lyrkeyz-data.json')
+let mainWindow
 
 function createWindow() {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     minWidth: 600,
@@ -88,6 +89,7 @@ function loadDataStore() {
 }
 
 function saveDataStore(storeData) {
+  console.log('saving store')
   const data = JSON.stringify(storeData, null, 2)
   fs.writeFileSync(dataPath, data)
 }
