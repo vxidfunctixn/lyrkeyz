@@ -1,7 +1,7 @@
 {
   "name": "lyrkeyz",
-  "version": "0.1.1",
-  "description": "A minimal Electron application with JavaScript",
+  "version": "0.2.0",
+  "description": "Lyric text Editor",
   "main": "./out/main/index.js",
   "author": "DR∀UG",
   "homepage": "https://electron-vite.org",
