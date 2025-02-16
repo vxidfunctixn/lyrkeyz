@@ -1,11 +1,11 @@
-import TextFormater from './classes/TextFormatter'
+import TextEditor from './classes/TextEditor'
 import Store from './classes/Store'
 
 function init() {
   window.addEventListener('DOMContentLoaded', () => {
     setVersion()
     window.store = new Store()
-    window.textformatter = new TextFormater()
+    window.textEditor = new TextEditor()
   })
 }
 

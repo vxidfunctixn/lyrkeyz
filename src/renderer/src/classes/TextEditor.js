@@ -1,4 +1,4 @@
-export default class TextFormater {
+export default class TextEditor {
   constructor() {
     this.textInput = document.getElementById('text-input')
     this.textOverlay = document.getElementById('text-overlay')
