@@ -1,0 +1,20 @@
+@use '../settings/colors' as color;
+
+@mixin scrollbar {
+  &::-webkit-scrollbar {
+     width: 8px;
+     height: 8px;
+     background-color: color.$background;
+
+  }
+
+  &::-webkit-scrollbar-thumb {
+     border-radius: 8px;
+     background-color: color.$accent;
+     border: 2px solid color.$line-shadow;
+  }
+
+  &::-webkit-scrollbar-corner {
+     background-color: color.$background;
+  }
+}

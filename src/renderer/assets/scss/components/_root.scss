@@ -1,0 +1,24 @@
+@use '../settings/colors' as color;
+@use '../settings/fonts' as font;
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: color.$background;
+  color: color.$font;
+  font-family: font.$primary;
+  font-size: 24px;
+  line-height: 32px;
+  margin: 0;
+  height: 100vh;
+  padding: 1px;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "clig" 0, "kern" 0, "calt" 0, "dlig" 0;
+}
+
+::selection {
+  background-color: color.$accent;
+  color: color.$font;
+}

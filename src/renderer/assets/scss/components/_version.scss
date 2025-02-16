@@ -1,0 +1,15 @@
+@use '../settings/colors' as color;
+
+.versions {
+  position: fixed;
+  font-size: 12px;
+  bottom: 0px;
+  right: 0px;
+  z-index: 999;
+  color: color.$accent;
+  opacity: 0.5;
+  pointer-events: none;
+  line-height: 12px;
+  width: 100%;
+  padding: 4px 8px;
+}
