@@ -77,6 +77,7 @@ export default class Store {
 
   setCurrentText(id) {
     if (this.data.texts.findIndex((x) => x.id === id) !== -1) this.data.currentText = id
+    this.debouncedSaveStore()
   }
 
   addText() {
@@ -91,6 +92,7 @@ export default class Store {
       }
     })
     this.data.currentText = id
+    this.debouncedSaveStore()
   }
 
   deleteText(id) {
@@ -107,5 +109,6 @@ export default class Store {
         this.data.currentText = this.data.texts[textIndex].id
       }
     }
+    this.debouncedSaveStore()
   }
 }
