@@ -3,31 +3,75 @@ export default class TextFormater {
     this.textInput = document.getElementById('text-input')
     this.textOverlay = document.getElementById('text-overlay')
     this.lineOverlay = document.getElementById('line-overlay')
-
-    this.textChange()
+    this.currentText = null
+    this.selection = {
+      row: 0,
+      column: 0
+    }
 
     this.textInput.addEventListener('input', () => this.textChange())
     document.addEventListener('selectionchange', () => this.textChange())
     this.textInput.addEventListener('scroll', () => this.handleTextScroll())
+
     document.addEventListener('dataStoreLoaded', () => {
-      const text = window.store.getText(1)?.text
-      this.loadText(text)
+      this.currentText = window.store.getText()
+      this.textInput.value = this.currentText.content
+      const { row, column } = this.currentText.selection
+      this.setCursorPosition(row, column)
+      this.textChange()
+      this.focusScrollPosition()
     })
 
     this.textInput.focus()
   }
 
-  loadText(value) {
-    this.textInput.value = value
-    this.textChange()
+  textChange() {
+    if (this.currentText === null) return
+    const linesData = this.prepareLinesData()
+    this.selection = { ...this.getCursorPosition() }
+    this.renderLines(linesData)
+    window.store.setText(this.currentText.id, {
+      content: this.textInput.value,
+      selection: this.selection
+    })
   }
 
-  textChange() {
-    const linesData = this.prepareLinesData()
-    this.renderLines(linesData)
-    window.store.setText(1, {
-      text: this.textInput.value
-    })
+  setCursorPosition(row, column) {
+    const text = this.textInput.value
+    const lines = text.split('\n')
+
+    if (row >= lines.length) {
+      throw new Error('Wiersz poza zakresem.')
+    }
+
+    if (column > lines[row].length) {
+      throw new Error('Kolumna poza zakresem wiersza.')
+    }
+
+    let cursorIndex = 0
+    for (let i = 0; i < row; i++) {
+      cursorIndex += lines[i].length + 1
+    }
+    cursorIndex += column
+
+    this.textInput.selectionStart = cursorIndex
+    this.textInput.selectionEnd = cursorIndex
+    this.selection = { row, column }
+  }
+
+  focusScrollPosition() {
+    const cursorCarret = this.textOverlay.querySelector('.cursor-carret')
+
+    if (!cursorCarret) {
+      throw new Error('Element .cursor-carret nie został znaleziony.')
+    }
+
+    const cursorRect = cursorCarret.getBoundingClientRect()
+    const overlayRect = this.textOverlay.getBoundingClientRect()
+
+    const relativeTop = cursorRect.top - overlayRect.top
+    this.textInput.scrollTop =
+      relativeTop + cursorRect.height / 2 - this.textOverlay.offsetHeight / 2
   }
 
   prepareLinesData() {
@@ -67,10 +111,8 @@ export default class TextFormater {
     let lineOverlayHTML = ''
     let textOverlayHTML = ''
 
-    const cursorPosition = this.getCursorPosition()
-
     linesData.map((line, index) => {
-      const isActiveLine = index === cursorPosition.currentLine
+      const isActiveLine = index === this.selection.row
       const highlightClass = isActiveLine ? ' highlight' : ''
       const cursorCarret = '<span class="cursor-carret"></span>'
 
@@ -79,9 +121,9 @@ export default class TextFormater {
 
       if (isActiveLine) {
         textHighLight =
-          textHighLight.slice(0, cursorPosition.currentColumn) +
+          textHighLight.slice(0, this.selection.column) +
           cursorCarret +
-          textHighLight.slice(cursorPosition.currentColumn)
+          textHighLight.slice(this.selection.column)
       }
 
       const textHighLightCommentArr = textHighLight.split('//')
@@ -164,8 +206,8 @@ export default class TextFormater {
     const lines = textBeforeCursor.split('\n')
 
     return {
-      currentLine: lines.length - 1,
-      currentColumn: lines[lines.length - 1].length
+      row: lines.length - 1,
+      column: lines[lines.length - 1].length
     }
   }
 

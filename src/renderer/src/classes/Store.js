@@ -3,7 +3,7 @@ import Utils from './Utils'
 export default class Store {
   constructor() {
     this.data = {
-      currentText: null,
+      currentText: 1,
       texts: [
         {
           id: 0,
@@ -12,7 +12,11 @@ export default class Store {
         {
           id: 1,
           name: 'Przykładowy tekst',
-          text: 'Przykładowy tekst'
+          content: 'Przykładowy tekst',
+          selection: {
+            row: 0,
+            column: 0
+          }
         }
       ]
     }
@@ -40,7 +44,8 @@ export default class Store {
     window.api.saveDataStore(this.data)
   }
 
-  getText(id) {
+  getText(id = null) {
+    if (!id) return this.data.texts.find((x) => x.id === this.data.currentText)
     return this.data.texts.find((x) => x.id === id)
   }
 
@@ -50,5 +55,9 @@ export default class Store {
       Object.assign(this.data.texts[textIndex], data)
     }
     this.debouncedSaveStore()
+  }
+
+  getCurrent() {
+    return this.data.currentText
   }
 }
