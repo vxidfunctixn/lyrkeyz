@@ -3,6 +3,7 @@ export default class TextEditor {
     this.textInput = document.getElementById('text-input')
     this.textOverlay = document.getElementById('text-overlay')
     this.lineOverlay = document.getElementById('line-overlay')
+    this.nameInput = document.getElementById('name-input')
     this.currentText = null
     this.selection = {
       row: 0,
@@ -12,10 +13,12 @@ export default class TextEditor {
     this.textInput.addEventListener('input', () => this.textChange())
     document.addEventListener('selectionchange', () => this.textChange())
     this.textInput.addEventListener('scroll', () => this.handleTextScroll())
+    this.nameInput.addEventListener('input', () => this.nameChange())
 
     document.addEventListener('dataStoreLoaded', () => {
       this.currentText = window.store.getText()
       this.textInput.value = this.currentText.content
+      this.nameInput.value = this.currentText.name
       const { row, column } = this.currentText.selection
       this.setCursorPosition(row, column)
       this.textChange()
@@ -23,6 +26,12 @@ export default class TextEditor {
     })
 
     this.textInput.focus()
+  }
+
+  nameChange() {
+    window.store.setText(this.currentText.id, {
+      name: this.nameInput.value
+    })
   }
 
   textChange() {
