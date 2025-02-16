@@ -1,4 +1,5 @@
 import TextEditor from './classes/TextEditor'
+import TextManager from './classes/TextManager'
 import Store from './classes/Store'
 
 function init() {
@@ -6,6 +7,7 @@ function init() {
     setVersion()
     window.store = new Store()
     window.textEditor = new TextEditor()
+    window.textManager = new TextManager()
   })
 }
 

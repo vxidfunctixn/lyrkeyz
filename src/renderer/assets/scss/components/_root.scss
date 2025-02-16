@@ -16,6 +16,7 @@ body {
   padding: 1px;
   font-variant-ligatures: none;
   font-feature-settings: "liga" 0, "clig" 0, "kern" 0, "calt" 0, "dlig" 0;
+  display: flex;
 }
 
 ::selection {

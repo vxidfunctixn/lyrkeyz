@@ -15,23 +15,29 @@ export default class TextEditor {
     this.textInput.addEventListener('scroll', () => this.handleTextScroll())
     this.nameInput.addEventListener('input', () => this.nameChange())
 
-    document.addEventListener('dataStoreLoaded', () => {
-      this.currentText = window.store.getText()
-      this.textInput.value = this.currentText.content
-      this.nameInput.value = this.currentText.name
-      const { row, column } = this.currentText.selection
-      this.setCursorPosition(row, column)
-      this.textChange()
-      this.focusScrollPosition()
-    })
+    document.addEventListener('dataStoreLoaded', () => this.loadText())
+  }
 
-    this.textInput.focus()
+  loadText(focusOnName = false) {
+    this.currentText = window.store.getText()
+    this.textInput.value = this.currentText.content
+    this.nameInput.value = this.currentText.name
+    const { row, column } = this.currentText.selection
+    this.setCursorPosition(row, column)
+    this.textChange()
+    this.focusScrollPosition()
+    if (focusOnName) {
+      this.nameInput.focus()
+    } else {
+      this.textInput.focus()
+    }
   }
 
   nameChange() {
     window.store.setText(this.currentText.id, {
       name: this.nameInput.value
     })
+    window.textManager.updateListItemName(this.currentText.id, this.nameInput.value)
   }
 
   textChange() {

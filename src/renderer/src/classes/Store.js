@@ -49,6 +49,10 @@ export default class Store {
     return this.data.texts.find((x) => x.id === id)
   }
 
+  getCurrentTextId() {
+    return this.data.currentText
+  }
+
   setText(id, data) {
     const textIndex = this.data.texts.findIndex((x) => x.id === id)
     if (textIndex !== -1) {
@@ -59,5 +63,49 @@ export default class Store {
 
   getCurrent() {
     return this.data.currentText
+  }
+
+  getList() {
+    return this.data.texts.slice(1)
+  }
+
+  generateTextId() {
+    const id = this.data.texts[0].nextId
+    this.data.texts[0].nextId++
+    return id
+  }
+
+  setCurrentText(id) {
+    if (this.data.texts.findIndex((x) => x.id === id) !== -1) this.data.currentText = id
+  }
+
+  addText() {
+    const id = this.generateTextId()
+    this.data.texts.push({
+      id,
+      name: 'Nowy tekst ' + id,
+      content: '',
+      selection: {
+        row: 0,
+        column: 0
+      }
+    })
+    this.data.currentText = id
+  }
+
+  deleteText(id) {
+    const textIndex = this.data.texts.findIndex((x) => x.id === id)
+    if (textIndex === -1) return
+    this.data.texts.splice(textIndex, 1)
+
+    if (this.data.texts.length < 2) {
+      this.addText()
+    } else if (this.data.currentText === id) {
+      if (textIndex > 1) {
+        this.data.currentText = this.data.texts[textIndex - 1].id
+      } else {
+        this.data.currentText = this.data.texts[textIndex].id
+      }
+    }
   }
 }

@@ -1,6 +1,10 @@
 @use '../settings/colors' as color;
+@use '../settings/fonts' as font;
+@use '../settings/sizes' as size;
 
 @mixin scrollbar {
+   overflow: auto;
+
   &::-webkit-scrollbar {
      width: 8px;
      height: 8px;
@@ -17,4 +21,38 @@
   &::-webkit-scrollbar-corner {
      background-color: color.$background;
   }
+}
+
+@mixin button {
+   font-family: font.$primary;
+   font-size: size.$font-secondary;
+   padding: 8px 16px;
+   background: transparent;
+   border: none;
+   color: color.$font;
+   position: relative;
+   cursor: pointer;
+
+   &::before {
+      content: "";
+      background-color: color.$accent-dark;
+      display: block;
+      width: calc(100% - 8px);
+      height: calc(100% - 8px);
+      top: 4px;
+      left: 4px;
+      position: absolute;
+      z-index: -1;
+      border-radius: 4px;
+      box-shadow: 0 1px 4px -1px black;
+      border: 1px solid color.$line-shadow;
+   }
+
+   &:hover::before {
+      border-color: color.$border;
+   }
+
+   &:active::before {
+      border-color: color.$accent;
+   }
 }

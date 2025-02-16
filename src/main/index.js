@@ -9,8 +9,8 @@ let mainWindow
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1000,
+    height: 800,
     minWidth: 600,
     minHeight: 300,
     show: false,

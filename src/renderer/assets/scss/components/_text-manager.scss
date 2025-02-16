@@ -1,0 +1,69 @@
+@use '../settings/colors' as color;
+@use '../settings/sizes' as size;
+@use '../partials/mixins' as mixin;
+
+#text-manager {
+  flex-basis: 320px;
+  border-right: 1px solid color.$border;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+
+  #text-manager-options {
+    display: flex;
+    height: 48px;
+    border-bottom: 1px solid color.$border;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+
+    button {
+      @include mixin.button;
+      width: 100%;
+    }
+  }
+
+  #text-list {
+    height: 100%;
+    @include mixin.scrollbar;
+
+    .text {
+      height: 48px;
+      padding: 8px 16px;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+      font-size: size.$font-secondary;
+
+      &::before {
+        content: '';
+        display: block;
+        height: 100%;
+        width: calc(100% - 16px);
+        border-radius: 4px;
+        position: absolute;
+        left: 8px;
+        top: 0;
+        z-index: -1;
+        height: calc(100% - 4px);
+        top: 2px;
+      }
+
+      &.highlight::before {
+        background-color: color.$highlight;
+        border: 1px solid color.$border;
+      }
+
+      &:not(.highlight) {
+        &:hover::before {
+          background-color: color.$line-shadow;
+          border: 1px solid color.$accent-dark;
+          box-shadow: inset 0 0 0 1px color.$accent-dark;
+        }
+
+        &:active::before {
+          border-color: color.$accent;
+        }
+      }
+    }
+  }
+}
