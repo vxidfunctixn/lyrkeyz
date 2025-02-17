@@ -49,10 +49,10 @@
    }
 
    &:hover::before {
-      border-color: color.$border;
+      border-color: color.$highlight;
    }
 
    &:active::before {
-      border-color: color.$accent;
+      border-color: color.$border;
    }
 }

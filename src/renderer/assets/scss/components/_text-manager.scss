@@ -55,9 +55,7 @@
 
       &:not(.highlight) {
         &:hover::before {
-          background-color: color.$line-shadow;
-          border: 1px solid color.$accent-dark;
-          box-shadow: inset 0 0 0 1px color.$accent-dark;
+          background-color: color.$highlight;
         }
 
         &:active::before {
