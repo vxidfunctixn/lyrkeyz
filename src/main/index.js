@@ -5,12 +5,18 @@ import icon from '../../resources/icon.png?asset'
 import fs from 'fs'
 
 const dataPath = join(app.getPath('userData'), 'lyrkeyz-data.json')
+const windowStatePath = join(app.getPath('userData'), 'window-state.json')
+const defaultWindowSize = { width: 1200, height: 800 }
 let mainWindow
 
 function createWindow() {
+  const windowState = loadWindowState()
+
   mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 800,
+    width: windowState.width || 1000,
+    height: windowState.height || 800,
+    x: windowState.x,
+    y: windowState.y,
     minWidth: 600,
     minHeight: 300,
     show: false,
@@ -29,6 +35,16 @@ function createWindow() {
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
+  })
+
+  mainWindow.on('resize', () => {
+    const bounds = mainWindow.getBounds()
+    saveWindowState(bounds)
+  })
+
+  mainWindow.on('move', () => {
+    const bounds = mainWindow.getBounds()
+    saveWindowState(bounds)
   })
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
@@ -70,6 +86,24 @@ function loadDataStore() {
 function saveDataStore(storeData) {
   const data = JSON.stringify(storeData, null, 2)
   fs.writeFileSync(dataPath, data)
+}
+
+function loadWindowState() {
+  try {
+    const data = fs.readFileSync(windowStatePath, 'utf-8')
+    return JSON.parse(data)
+  } catch (error) {
+    return defaultWindowSize
+  }
+}
+
+let saveStateTimeout = null
+function saveWindowState(bounds) {
+  clearTimeout(saveStateTimeout)
+  saveStateTimeout = setTimeout(() => {
+    const data = JSON.stringify(bounds, null, 2)
+    fs.writeFileSync(windowStatePath, data)
+  }, 200)
 }
 
 ipcMain.handle('load-data-store', () => loadDataStore())
