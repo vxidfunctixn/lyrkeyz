@@ -1,3 +1,5 @@
+import ContextMenu from './ContextMenu'
+
 export default class TextManager {
   constructor() {
     this.textList = document.getElementById('text-list')
@@ -48,11 +50,25 @@ export default class TextManager {
 
   deleteText(e) {
     if (e?.target?.classList?.contains('text')) {
-      const textId = Number(e.target.dataset.id)
-      window.store.deleteText(textId)
-      this.list = window.store.getList()
-      this.renderList()
-      window.textEditor.loadText()
+      new ContextMenu(e, [
+        {
+          label: 'Usuń',
+          action: () => {
+            const textId = Number(e.target.dataset.id)
+            window.store.deleteText(textId)
+            this.list = window.store.getList()
+            this.renderList()
+            window.textEditor.loadText()
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Zaznacz',
+          disabled: true
+        }
+      ])
     }
   }
 }

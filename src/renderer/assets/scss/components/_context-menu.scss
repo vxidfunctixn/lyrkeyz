@@ -1,0 +1,40 @@
+@use '../settings/colors' as color;
+@use '../partials/mixins' as mixin;
+
+.context-menu {
+  position: absolute;
+  background-color: color.$background;
+  min-width: 200px;
+  border: 1px solid color.$highlight;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 6px;
+  box-shadow: 0 10px 35px -5px rgba(black, .7);
+  padding: 4px 0;
+
+  .option {
+    height: 48px;
+    width: 100%;
+    @include mixin.button;
+
+    &.disabled {
+      pointer-events: none;
+      filter: grayscale(0.5);
+      color: color.$border;
+
+      &::before {
+
+        border: none !important;
+      }
+    }
+  }
+
+  .separator {
+    border-top: 2px solid color.$highlight;
+    width: 100%;
+    display: block;
+    margin: 4px 0;
+  }
+}

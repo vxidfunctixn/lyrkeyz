@@ -24,6 +24,7 @@
 }
 
 @mixin button {
+   display: block;
    font-family: font.$primary;
    font-size: size.$font-secondary;
    padding: 8px 16px;
@@ -32,6 +33,7 @@
    color: color.$font;
    position: relative;
    cursor: pointer;
+   z-index: 1;
 
    &::before {
       content: "";
