@@ -6,6 +6,8 @@ import fs from 'fs'
 
 const dataPath = join(app.getPath('userData'), 'lyrkeyz-data.json')
 const windowStatePath = join(app.getPath('userData'), 'window-state.json')
+const packageJsonPath = join(__dirname, '../../package.json')
+const version = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8')).version
 const defaultWindowSize = { width: 1200, height: 800 }
 let mainWindow
 
@@ -108,3 +110,4 @@ function saveWindowState(bounds) {
 
 ipcMain.handle('load-data-store', () => loadDataStore())
 ipcMain.handle('save-data-store', (e, storeData) => saveDataStore(storeData))
+ipcMain.handle('get-app-version', () => version)

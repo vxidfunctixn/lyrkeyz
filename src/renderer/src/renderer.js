@@ -13,13 +13,15 @@ function init() {
 
 function setVersion() {
   const versions = window.electron.process.versions
-  const appVersion = window.electron.process.env.npm_package_version
-  const appName = 'LyrkeyZ'
 
-  replaceText('.app-version', `${appName} v${appVersion}`)
   replaceText('.electron-version', `Electron v${versions.electron}`)
   replaceText('.chrome-version', `Chromium v${versions.chrome}`)
   replaceText('.node-version', `Node v${versions.node}`)
+
+  window.api.getAppVersion().then((version) => {
+    const appName = 'LyrkeyZ'
+    replaceText('.app-version', `${appName} v${version}`)
+  })
 }
 
 function replaceText(selector, text) {

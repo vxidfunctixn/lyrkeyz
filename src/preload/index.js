@@ -4,7 +4,8 @@ import { electronAPI } from '@electron-toolkit/preload'
 // Custom APIs for renderer
 const api = {
   loadDataStore: () => ipcRenderer.invoke('load-data-store'),
-  saveDataStore: (data) => ipcRenderer.invoke('save-data-store', data)
+  saveDataStore: (data) => ipcRenderer.invoke('save-data-store', data),
+  getAppVersion: () => ipcRenderer.invoke('get-app-version')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
