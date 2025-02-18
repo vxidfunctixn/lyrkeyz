@@ -43,9 +43,12 @@
 
     #text-input {
       position: absolute;
-      width: calc(100% - 88px);
-      left: 88px;
-      padding-left: 8px;
+      width: calc(100% - 96px);
+      left: 96px;
+      background-clip: padding-box;
+      padding-left: 0;
+      padding-right: 0;
+      box-sizing: border-box;
       height: 100%;
       background-color: transparent;
       color: color.$font;
@@ -211,6 +214,7 @@
       width: calc(100% - 88px);
       left: 88px;
       padding-left: 8px;
+      padding-right: 8px;
       height: 100%;
       padding-top: 8px;
       padding-bottom: 16px;

@@ -8,14 +8,31 @@
   &::-webkit-scrollbar {
      width: 8px;
      height: 8px;
-     background-color: color.$background;
 
+     &:vertical {
+        background-image: linear-gradient(90deg, transparent,  transparent 2px, color.$background 2.01px, color.$background 100% );
+     }
+
+     &:horizontal {
+        background-image: linear-gradient(180deg, transparent,  transparent 2px, color.$background 2.01px, color.$background 100% );
+     }
   }
 
+
+
   &::-webkit-scrollbar-thumb {
-     border-radius: 8px;
-     background-color: color.$accent;
-     border: 2px solid color.$line-shadow;
+    --thumb-color: #{color.$border};
+     &:vertical {
+       background-image: linear-gradient(90deg, transparent,  transparent 2px, var(--thumb-color) 2.01px, var(--thumb-color) calc(100% - 2.01px), transparent calc(100% - 2px), transparent);
+     }
+
+     &:horizontal {
+       background-image: linear-gradient(180deg, transparent,  transparent 2px, var(--thumb-color) 2.01px, var(--thumb-color) calc(100% - 2.01px), transparent calc(100% - 2px), transparent);
+     }
+
+     &:hover {
+      --thumb-color: #{color.$highlight-strong};
+     }
   }
 
   &::-webkit-scrollbar-corner {
