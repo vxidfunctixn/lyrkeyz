@@ -32,6 +32,12 @@ export default class ContextMenu {
     menu.innerHTML = menuHtml
 
     document.body.appendChild(menu)
+    const rect = menu.getBoundingClientRect()
+    const bottomOffset = window.innerHeight - this.y - rect.height
+    const rightOffset = window.innerWidth - this.x - rect.width
+    if (bottomOffset < 0) menu.style.top = this.y + bottomOffset + 'px'
+    if (rightOffset < 0) menu.style.left = this.x + rightOffset + 'px'
+
     menu.focus()
     menu.addEventListener('blur', (e) => this.removeMenu(e))
     menu.addEventListener('click', (e) => this.handleClick(e))
